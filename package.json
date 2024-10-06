@@ -1,0 +1,40 @@
+{
+  "name": "web-admin",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "run-p type-check build-only",
+    "preview": "vite preview",
+    "build-only": "vite build",
+    "type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false"
+  },
+  "dependencies": {
+    "@ant-design/icons-vue": "^6.1.0",
+    "@antv/g2plot": "^2.4.31",
+    "ant-design-vue": "^4.0.0",
+    "axios": "^1.4.0",
+    "chart.js": "^3.1.0",
+    "dayjs": "^1.11.9",
+    "firebase": "^10.1.0",
+    "pinia": "^2.0.36",
+    "vue": "^3.3.2",
+    "vue-chart-3": "^3.1.8",
+    "vue-class-component": "^8.0.0-rc.1",
+    "vue-router": "^4.2.0"
+  },
+  "devDependencies": {
+    "@tsconfig/node18": "^2.0.1",
+    "@types/node": "^18.16.8",
+    "@vitejs/plugin-vue": "^4.2.3",
+    "@vitejs/plugin-vue-jsx": "^3.0.1",
+    "@vue/tsconfig": "^0.4.0",
+    "autoprefixer": "^10.4.14",
+    "npm-run-all": "^4.1.5",
+    "postcss": "^8.4.27",
+    "tailwindcss": "^3.3.3",
+    "typescript": "~5.0.4",
+    "vite": "^4.3.5",
+    "vue-tsc": "^1.6.4"
+  }
+}
