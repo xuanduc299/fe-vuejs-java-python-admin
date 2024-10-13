@@ -71,7 +71,7 @@ const router = createRouter({
         {
           path: '/quan-ly-danh-gia',
           name: 'review_management',
-          component: () => import('../views/review/reviewListPage.vue'),
+          component: () => import('../views/review/ReviewListPage.vue'),
         },
         {
           path: '/ma-giam-gia',

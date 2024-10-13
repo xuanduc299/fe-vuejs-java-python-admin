@@ -47,6 +47,13 @@
                   v-model:value="variation.quantity" />
               </a-space>
             </div>
+
+            <div v-show="variation.isShowErr && hasClickSaveBtn" role="alert"
+            class="css-dev-only-do-not-override-eq3tly ant-form-item-explain ant-form-item-explain-connected ant-form-show-help mt-[10px] text-red-500">
+            <div class="ant-form-item-explain-error">
+              Vui lòng chọn phân loại!
+            </div>
+          </div>
           </div>
 
           <div class="flex gap-[10px] items-center justify-end w-full mt-[10px] font-semibold">
@@ -59,12 +66,7 @@
             </p>
           </div>
 
-          <div v-show="item.isShowErr && hasClickSaveBtn" role="alert"
-            class="css-dev-only-do-not-override-eq3tly ant-form-item-explain ant-form-item-explain-connected ant-form-show-help mt-[10px] text-red-500">
-            <div class="ant-form-item-explain-error">
-              Vui lòng chọn phân loại!
-            </div>
-          </div>
+          
         </div>
 
         <div v-show="isShowVariationInfoErr" role="alert"
@@ -87,14 +89,16 @@
             <div class="w-full flex gap-[10px]">
               <a-space direction="vertical" class="w-[50%]">
                 <span class="font-[500]"> Họ tên</span>
-                <a-input v-model:value="orderInfo.hoTenNguoiNhan" @change="orderInfo.hoTenNguoiNhan = _removeSpecialChars(orderInfo.hoTenNguoiNhan).replace(/^\s+/, '')" class="w-full" placeholder="Họ tên người nhận">
+                <a-input v-model:value="orderInfo.hoTenNguoiNhan"
+                  @change="orderInfo.hoTenNguoiNhan = _removeSpecialChars(orderInfo.hoTenNguoiNhan).replace(/^\s+/, '')"
+                  class="w-full" placeholder="Họ tên người nhận">
                 </a-input>
               </a-space>
 
               <a-space direction="vertical" class="w-[50%]">
                 <span class="font-[500]">Số điện thoại</span>
-                <a-input v-model:value="orderInfo.soDienThoaiNhanHang" :maxLength="10" @change="onTypingPhone" class="w-full"
-                  placeholder="Số điện thoai">
+                <a-input v-model:value="orderInfo.soDienThoaiNhanHang" :maxLength="10" @change="onTypingPhone"
+                  class="w-full" placeholder="Số điện thoai">
                 </a-input>
               </a-space>
 
@@ -102,7 +106,9 @@
 
             <a-space direction="vertical" class="w-full">
               <span class="font-[500]">Ghi chú</span>
-              <a-input v-model:value="orderInfo.ghiChu"  @change="orderInfo.ghiChu = _removeSpecialChars(orderInfo.ghiChu).replace(/^\s+/, '')" class="w-full" placeholder="Ghi chú">
+              <a-input v-model:value="orderInfo.ghiChu"
+                @change="orderInfo.ghiChu = _removeSpecialChars(orderInfo.ghiChu).replace(/^\s+/, '')" class="w-full"
+                placeholder="Ghi chú">
               </a-input>
             </a-space>
 
@@ -113,9 +119,9 @@
                   @change="onProvinceChange">
                   <a-select-option value="">Chọn tỉnh/tp</a-select-option>
                   <a-select-option v-for="(item, index) in provinceList" :key="index"
-                :value="`${item.PROVINCE_ID}##${item.PROVINCE_NAME}`">
-                {{ item.PROVINCE_NAME }}
-              </a-select-option>
+                    :value="`${item.PROVINCE_ID}##${item.PROVINCE_NAME}`">
+                    {{ item.PROVINCE_NAME }}
+                  </a-select-option>
                 </a-select>
               </a-space>
 
@@ -125,9 +131,9 @@
                   style="width: 100%" @change="onDistrictChange">
                   <a-select-option value="">Chọn quận/huyện</a-select-option>
                   <a-select-option v-for="(item, index) in districtList" :key="index"
-                :value="`${item.DISTRICT_ID}##${item.DISTRICT_NAME}`">
-                {{ item.DISTRICT_NAME }}
-              </a-select-option>
+                    :value="`${item.DISTRICT_ID}##${item.DISTRICT_NAME}`">
+                    {{ item.DISTRICT_NAME }}
+                  </a-select-option>
                 </a-select>
               </a-space>
 
@@ -136,16 +142,18 @@
                 <a-select v-model:value="addressInfo.ward" show-search style="width: 100%">
                   <a-select-option value="">Chọn xã/phường</a-select-option>
                   <a-select-option v-for="(item, index) in wardList" :key="index"
-                :value="`${item.WARDS_ID}##${item.WARDS_NAME}`">
-                {{ item.WARDS_NAME }}
-              </a-select-option>
+                  :value="`${item.WARDS_ID}##${item.WARDS_NAME}`">
+                  {{ item.WARDS_NAME }}
+                  </a-select-option>
                 </a-select>
               </a-space>
             </div>
 
             <a-space direction="vertical" class="w-full">
               <span class="font-[500]">Số nhà</span>
-              <a-input v-model:value="orderInfo.diaChiNhanHang" @change="orderInfo.diaChiNhanHang = _removeSpecialChars(orderInfo.diaChiNhanHang).replace(/^\s+/, '')" class="w-full" placeholder="Số nhà để giao hàng">
+              <a-input v-model:value="orderInfo.diaChiNhanHang"
+                @change="orderInfo.diaChiNhanHang = _removeSpecialChars(orderInfo.diaChiNhanHang).replace(/^\s+/, '')"
+                class="w-full" placeholder="Số nhà để giao hàng">
               </a-input>
             </a-space>
           </a-space>
@@ -184,7 +192,8 @@
 
             <a-space class="w-full justify-between ">
               <label>Giảm giá: </label>
-              <a-input-number class="w-[150px]" min="0" :max="countProductPrice+orderInfo.shipFee" v-model:value="orderInfo.discount" />
+              <a-input-number class="w-[150px]" min="0" :max="countProductPrice + orderInfo.shipFee"
+                v-model:value="orderInfo.discount" />
             </a-space>
 
             <a-space class="w-full justify-between">
@@ -229,7 +238,7 @@ import OrderService from "./services/OrderService";
 import { useRouter } from "vue-router";
 import ChooseProductForORderModal, {
   type ChooseProductForORderModalType,
-} from "./components/ChooseProductForORderModal.vue";
+} from "./components/ChooseProductForOrderModal.vue";
 
 const _removeSpecialChars = inject("removeSpecialChars", (val: string) => val);
 const _formatVnCurrency = inject("formatVnCurrency", (length: number) => {
@@ -248,6 +257,8 @@ const choseProductList = ref<
       variationId?: number;
       isShowErr: boolean;
       maxQuantity: number;
+      label:any;
+      soLuong:any;
     }[];
   }[]
 >([]);
@@ -269,12 +280,12 @@ const chooseProductForOrderObj = reactive<ChooseProductForORderModalType>({
     ) {
       choseProductList.value = choseProductList.value.map((item) => {
         item.variations.forEach((v) => {
-          if (product.variations.find((s) => v.variationId == s.variationId)) {
-            if (v.quantity != v.soLuong) v.quantity += 1;
+          if (product.variations.find((s: any) => v.variationId == s.variationId)) {
+            if (v.quantity != v.quantity) v.quantity += 1;
           }
         });
-        const newVariationLs = [];
-        product.variations.forEach((v) => {
+        const newVariationLs: any[] = [];
+        product.variations.forEach((v: any) => {
           if (!item.variations.find((s) => v.variationId == s.variationId)) {
             v.quantity = 1;
             newVariationLs.push(v);
@@ -332,16 +343,22 @@ const addressInfo = reactive<{
 type AddressProvinceType = {
   code: string;
   name: string;
+  PROVINCE_ID: string;
+  PROVINCE_NAME: string;
   district?: AddressDistrictType[];
 };
 type AddressDistrictType = {
   code: string;
   name: string;
+  DISTRICT_ID: string;
+  DISTRICT_NAME: string;
   wards?: AddressWardType[];
 };
 type AddressWardType = {
   code: string;
   name: string;
+  WARDS_ID: string;
+  WARDS_NAME: string;
 };
 
 const provinceList = ref<AddressProvinceType[]>([]);
@@ -351,7 +368,7 @@ const wardList = ref<AddressWardType[]>([]);
 const orderInfo = reactive<IAddOrderReq>({
   phanLoaidIds: [],
   diaChiNhanHang: "277 Duy Tân",
-  hoTenNguoiNhan: "shiki orisu",
+  hoTenNguoiNhan: "Nguyễn Văn A",
   soDienThoaiNhanHang: "0584843998",
   ghiChu: "",
   phuongThucTT: "COD",
@@ -473,7 +490,7 @@ const calcShipFee = () => {
   })
     .then((response) => response.json())
     .then((result) => {
-      result = result.sort((r1, r2) => r1.GIA_CUOC - r2.GIA_CUOC);
+      result = result.sort((r1: any, r2: any) => r1.GIA_CUOC - r2.GIA_CUOC);
       console.log(result);
 
       if (result.length == 0) {
@@ -514,7 +531,7 @@ const onClickSave = () => {
     totalPay: orderInfo.totalPay
   };
 
-  const variationLs = [];
+  const variationLs: any[] = [];
   choseProductList.value.forEach((item) => {
     variationLs.push(
       ...item.variations.map((j) => ({

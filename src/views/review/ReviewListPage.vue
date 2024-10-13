@@ -214,7 +214,7 @@ const loadProductReviews = () => {
       product.value.id,
       searchVal.value || undefined,
       tblConfig.pagination.current as number - 1,
-      tblConfig.pagination.pageSize as number)
+      tblConfig.pagination.pageSize as any)
       .then((res: IAxiosPageRes<IReviewRes>) => {
         console.log("product review. tat ca review: ", res.data);
         tblConfig.data = res.data.content.map(

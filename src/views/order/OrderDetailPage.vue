@@ -120,17 +120,18 @@
           <p class="text-[16px] font-bold">Địa chỉ giao hàng</p>
 
           <p>
-            {{ orderDetail.diaChi.diaChi.replaceAll(/__[0-9]+##/g, ", ") }}
+            {{ orderDetail.diaChi.diaChi}} 
+            <!-- .replaceAll(/__[0-9]+##/g, ", ")  -->
           </p>
 
           <p class="text-[16px] font-bold">Ghi chú của khách hàng</p>
           <p>{{ orderDetail.ghiChu || "-" }}</p>
           <!-- <a-badge status="processing" text="Running" /> -->
 
-          <template v-if="orderDetail?.nguoiMua">
+          <!-- <template v-if="orderDetail?.nguoiMua">
             <p class="text-[16px] font-bold">Tài khoản đặt hàng</p>
             <p>{{ orderDetail?.nguoiMua?.username }}</p>
-          </template>
+          </template> -->
 
         </div>
       </a-card>

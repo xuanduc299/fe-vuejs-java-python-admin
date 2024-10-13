@@ -88,7 +88,7 @@ const tblConfig = reactive({
     pageSize: 10,
     total: 0,
     showSizeChanger: false,
-    onChange: (page) => (tblConfig.pagination.current = page.current),
+    onChange: (page: any) => (tblConfig.pagination.current = page.current),
   },
 });
 const modalModel = reactive({
@@ -107,7 +107,7 @@ const modalModel = reactive({
   },
   title: "Thêm mới mã giảm giá",
   okText: "Thêm",
-  onOk: (formVals) => {
+  onOk: (formVals: any) => {
     console.log("form values: ", modalModel.couponModel);
 
     modalModel.confirmLoading = true;
@@ -137,7 +137,7 @@ const modalModel = reactive({
           modalModel.onCancel();
         })
         .catch((err) => {
-          if (err.data) message.error(t(err.data.code));
+          if (err.data) message.error((err.data.code));
           else
             notification.error({
               message: "Thêm mới thất bại!",
@@ -157,7 +157,7 @@ const modalModel = reactive({
           message.success("Cập nhật thành công!");
         })
         .catch((err) => {
-          if (err.data) message.error(t(err.data.code));
+          if (err.data) message.error((err.data.code));
           else message.error("Cập nhật thất bại!");
         })
         .finally(() => (modalModel.confirmLoading = false));
@@ -169,7 +169,7 @@ const modalModel = reactive({
       maGiamGia: "",
       moTa: "",
       giaGiam: "10000",
-      phanTramGiam: "",
+      phanTramGiam: null,
       giamGiaTheo: "DIRECTLY",
       dateRange: [],
       loaiGiamGia: "ALL",
@@ -203,12 +203,12 @@ const filterModel = reactive({
   q: "",
 });
 
-const changeStatus = (status) => {
+const changeStatus = (status: any) => {
   filterModel.status = status;
   callFilterCouponService();
 };
 
-const deleteCoupon = (id) => {
+const deleteCoupon = (id: any) => {
   tblConfig.loading = true;
   VoucherService.deleteBulkVoucher([id])
     .then(() => {
@@ -235,7 +235,7 @@ const callFilterCouponService = () => {
   )
     .then(({ data }) => {
       console.log("filter coupon: ", data);
-      tblConfig.data = data.content.map((i, index: number) => ({
+      tblConfig.data = data.content.map((i: any, index: number) => ({
         ...i,
         index: index + 1,
       }));

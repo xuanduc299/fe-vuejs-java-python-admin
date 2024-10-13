@@ -24,7 +24,7 @@ function eraseCookie(name: string) {
 function hasAnyAuths(names: string[]) {
     var auths = JSON.parse(localStorage.getItem("auths") || '[]');
     if (auths) {
-        for(var i = 0; i < names.length; i++) {
+        for (var i = 0; i < names.length; i++) {
             if (auths.includes(names[i])) {
                 return true;
             }
@@ -46,7 +46,7 @@ const readFileBase64 = (file: File) => {
 };
 
 const debounce = (func: Function, delay = 500) => {
-    let debounceTimer: number;
+    let debounceTimer: number | NodeJS.Timeout;
     return function () {
         // @ts-ignore
         const context = this;

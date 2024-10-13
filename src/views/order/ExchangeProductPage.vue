@@ -286,10 +286,13 @@ import type IFileModel from "@/commons/types/IFileModel";
 import type IBrandType from "@/views/product/types/IBrandType";
 import type ICategoryType from "@/views/product/types/ICategoryType";
 import type { AxiosResponse } from "axios";
-import type { IAddOrderReq } from "../types/IAddOrderReq";
-import ChooseProductForORderModal, {
-  type ChooseProductForORderModalType,
-} from "./components/ChooseProductForORderModal.vue";
+import type { IAddOrderReq } from "./types/IAddOrderReq";
+import ChooseProductForOrderModal, { type ChooseProductForORderModalType } from './components/ChooseProductForOrderModal.vue';
+// import ChooseProductForORderModal, {
+//   type ChooseProductForORderModalType
+// } from "./components/ChooseProductForORderModal.vue"; 
+
+// import ChooseProductForORderModalType { ChooseProductForORderModalType }; 
 
 const _debounce: Function = inject("debounce", () => {});
 const _getProvinces = inject("getProvinces", (p: any) => []);
@@ -442,6 +445,9 @@ const orderInfo = ref<IAddOrderReq>({
   soDienThoaiNhanHang: "",
   ghiChu: "",
   phuongThucTT: "COD",
+  discount: 0,         // Thêm thuộc tính discount
+  shipFee: 0,         // Thêm thuộc tính shipFee
+  totalPay: 0   
 });
 const hasTypedPhone = ref<boolean>(false);
 const onTypingPhone = () => (hasTypedPhone.value = true);

@@ -97,6 +97,7 @@ import { onMounted, reactive, ref, inject } from "vue";
 import AddEditUser from "./components/AddEditUserModal.vue";
 import UserService from "./services/UserService";
 import { message, notification } from "ant-design-vue";
+import type { FormInstance } from 'ant-design-vue';
 import dayjs from "dayjs";
 
 const _debounce = inject("debounce", (func: Function, delay: number) => {
@@ -106,24 +107,24 @@ const _debounce = inject("debounce", (func: Function, delay: number) => {
 const addEditUserModalInstance = reactive({
   visible: false,
   type: "add",
-  formRef: null,
+  formRef: ref<FormInstance | null>(null),
   loading: false,
   userModel: {
     id: null,
     userId: "",
     name: "",
-    password: "",
     roleCd: "",
     email: "",
     phone: "",
     sex: "MALE",
+    birthDate: ""
   },
   roleList: [],
   authorityData: [],
-  ready: (formRef) => {
+  ready: (formRef: any) => {
     addEditUserModalInstance.formRef = formRef;
   },
-  showEditUserModal: (record) => {
+  showEditUserModal: (record: any) => {
     addEditUserModalInstance.userModel = {
       id: record.id,
       userId: record.userId,
@@ -132,31 +133,31 @@ const addEditUserModalInstance = reactive({
       email: record.email,
       phone: record.phone,
       sex: record.sex,
+      birthDate: record.birthDate,
     };
     if (record?.birthDate && record?.birthDate.length > 0)
-      addEditUserModalInstance.userModel.birthDate = dayjs(record.birthDate);
+      addEditUserModalInstance.userModel.birthDate = dayjs(record.birthDate).format('YYYY-MM-DD');
     addEditUserModalInstance.visible = true;
     addEditUserModalInstance.type = "edit";
   },
   cancel: () => {
-    addEditUserModalInstance?.formRef?.resetFields();
+    // addEditUserModalInstance.formRef?.resetFields();
     addEditUserModalInstance.visible = false;
     addEditUserModalInstance.type = "add";
     addEditUserModalInstance.userModel = {
       id: null,
       userId: "",
       name: "",
-      password: "",
       roleCd: "",
       email: "",
       phone: "",
       sex: "MALE",
+      birthDate: ""
     };
   },
   ok: () => {
-    addEditUserModalInstance.formRef
-      .validateFields()
-      .then((values) => {
+    if (addEditUserModalInstance.formRef) {
+      addEditUserModalInstance.formRef.validateFields().then((values: any) => {
         console.log("on ok edit: ", addEditUserModalInstance.userModel);
         addEditUserModalInstance.loading = true;
         values.birthDate = values.birthDate
@@ -203,7 +204,12 @@ const addEditUserModalInstance = reactive({
           )
             .then((res) => {
               console.log("res", res);
-
+              let tblConfig: {
+                pagination: any; data: any[] 
+} = {
+  data: [],
+  pagination: undefined
+};
               tblConfig.data = tblConfig.data.map((item) => {
                 if (item.id === addEditUserModalInstance.userModel.id)
                   return res.data;
@@ -240,11 +246,12 @@ const addEditUserModalInstance = reactive({
               addEditUserModalInstance.loading = false;
             });
       })
-      .catch((err) => {
-        console.log("err: ", err);
+        .catch((err: any) => {
+          console.log("err: ", err);
 
-        message.error("Vui lòng kiểm tra lại thông tin!");
-      });
+          message.error("Vui lòng kiểm tra lại thông tin!");
+        });
+    }
   },
 });
 
@@ -320,7 +327,7 @@ const tblConfig = reactive({
     total: 100,
     showSizeChanger: false,
   },
-  onChange: (pagination) => {
+  onChange: (pagination: any) => {
     tblConfig.pagination.current = pagination.current;
     callUserSearchService();
   },
@@ -343,7 +350,7 @@ const callUserSearchService = () => {
   UserService.filterStaff(payload)
     .then((res) => {
       console.log("search res", res);
-      tblConfig.data = res.data.content.map((item, index) => ({ ...item, stt: index + 1 }));
+      tblConfig.data = res.data.content.map((item: any, index: number) => ({ ...item, stt: index + 1 }));
       tblConfig.pagination.total = res.data.totalElements;
     })
     .catch((err) => {
@@ -355,7 +362,7 @@ const callUserSearchService = () => {
     });
 };
 
-const deleteUser = (id) => {
+const deleteUser = (id: any) => {
   tblConfig.loading = true;
   UserService.deleteUser(id)
     .then(() => {

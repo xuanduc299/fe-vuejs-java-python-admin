@@ -1,26 +1,11 @@
 <template>
-  <a-modal
-    :open="model.visible"
-    @ok="model.onOk"
-    @cancel="model.onCancel"
-    title="Chọn sản phẩm"
-    :footer="null"
-  >
+  <a-modal :open="model.visible" @ok="model.onOk" @cancel="model.onCancel" title="Chọn sản phẩm" :footer="null">
     <a-card class="w-full">
-      <a-auto-complete
-        v-model:value="searchProduct"
-        :options="searchProductOpts"
-        @search="onSearchProduct"
-        @change="onChooseProduct"
-        style="width: 100%"
-        placeholder="Nhập tên hoặc mã sản phẩm"
-      >
+      <a-auto-complete v-model:value="searchProduct" :options="searchProductOpts" @search="onSearchProduct"
+        @change="onChooseProduct" style="width: 100%" placeholder="Nhập tên hoặc mã sản phẩm">
         <template #option="item">
           <a-space :size="20">
-            <div
-              class="w-[43px] h-[50px] ease-in-out duration-150 relative"
-              style="border: 1px solid #d9d9d9"
-            >
+            <div class="w-[43px] h-[50px] ease-in-out duration-150 relative" style="border: 1px solid #d9d9d9">
               <img class="w-full h-full" :src="item.anhChinh?.url" />
             </div>
 
@@ -34,38 +19,22 @@
         </template>
       </a-auto-complete>
 
-      <div
-        class="p-[15px] mt-[10px] relative"
-        :key="index"
-        v-for="(item, index) in choseProductList"
-      >
+      <div class="p-[15px] mt-[10px] relative" :key="index" v-for="(item, index) in choseProductList">
         <a-space :size="20">
-          <div
-            class="w-[43px] h-[50px] ease-in-out duration-150 relative"
-            style="border: 1px solid #d9d9d9"
-          >
+          <div class="w-[43px] h-[50px] ease-in-out duration-150 relative" style="border: 1px solid #d9d9d9">
             <img class="w-full h-full" :src="item?.product?.anhChinh?.url" />
           </div>
 
           <span class="font-semibold">
             {{ item?.product?.tieuDe }} <br />
-            <span class="text-[unset]"
-              >Giá: {{ _formatVnCurrency(item?.product?.giaMoi) }}</span
-            >
+            <span class="text-[unset]">Giá: {{ _formatVnCurrency(item?.product?.giaMoi) }}</span>
           </span>
         </a-space>
 
         <div class="grid mt-[10px]">
-          <div
-            class="flex gap-[15px]"
-            :key="index"
-            v-for="(item, index) in item.variations"
-          >
-            <a-checkbox
-              :disabled="item.disabled"
-              v-model:checked="item.checked"
-            ></a-checkbox>
-            <span> {{ item.label }} - Còn {{ item.soLuong }} sản phẩm </span>
+          <div class="flex gap-[15px]" :key="index" v-for="(item1, index) in item.variations">
+            <a-checkbox :disabled="item1.disabled" v-model:checked="item1.checked"></a-checkbox>
+            <span> {{ item1.label }} - Còn {{ item1.soLuong }} sản phẩm </span>
           </div>
         </div>
       </div>
@@ -103,7 +72,7 @@ import { useRouter } from "vue-router";
 const _formatVnCurrency = inject("formatVnCurrency", (length: number) => {
   return -1;
 });
-const _debounce: Function = inject("debounce", () => {});
+const _debounce: Function = inject("debounce", () => { });
 const _getProvinces = inject("getProvinces", (p: any) => []);
 const _router = useRouter();
 
@@ -192,7 +161,7 @@ const onCallSearchProductApi = (val: string) => {
         message: "Lấy dữ liệu thất bại!",
       });
     })
-    .finally(() => {});
+    .finally(() => { });
 };
 
 export type ChooseProductForORderModalType = {

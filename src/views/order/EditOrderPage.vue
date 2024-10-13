@@ -1,48 +1,29 @@
 <template>
-  <a-page-header
-    class="rounded-[5px]"
-    style="
+  <a-page-header class="rounded-[5px]" style="
       border: 1px solid rgb(235, 237, 240);
       margin: 20px;
       background: white;
-    "
-    @back="() => $router.go(-1)"
-  >
+    " @back="() => $router.go(-1)">
     <template #title>
       <h3 class="text-2xl">Chỉnh sửa đơn hàng</h3>
     </template>
     <template #tags>
-      <a-button type="primary" @click="onClickSave" :loading="isSaving"
-        >Cập nhật
+      <a-button type="primary" @click="onClickSave" :loading="isSaving">Cập nhật
       </a-button>
     </template>
     <div class="flex gap-[15px]">
       <a-card class="w-2/3" title="Sản phẩm">
         <template #extra>
-          <a-button
-            type="primary"
-            @click="chooseProductForOrderObj.visible = true"
-            >Chọn sản phẩm</a-button
-          >
+          <a-button type="primary" @click="chooseProductForOrderObj.visible = true">Chọn sản phẩm</a-button>
         </template>
 
-        <div
-          class="bg-gray-100 p-[15px] mt-[10px] relative"
-          :key="index"
-          v-for="(item, index) in choseProductList"
-        >
+        <div class="bg-gray-100 p-[15px] mt-[10px] relative" :key="index" v-for="(item, index) in choseProductList">
           <div class="absolute top-1 right-1 cursor-pointer">
-            <DeleteOutlined
-              class="text-red-400 hover:text-red-500"
-              @click="removeProduct(item.product.id)"
-            />
+            <DeleteOutlined class="text-red-400 hover:text-red-500" @click="removeProduct(item.product.id)" />
           </div>
 
           <a-space :size="20">
-            <div
-              class="w-[43px] h-[50px] ease-in-out duration-150 relative"
-              style="border: 1px solid #d9d9d9"
-            >
+            <div class="w-[43px] h-[50px] ease-in-out duration-150 relative" style="border: 1px solid #d9d9d9">
               <img class="w-full h-full" :src="item?.product?.anhChinh?.url" />
             </div>
 
@@ -55,63 +36,46 @@
             </a-space>
           </a-space>
 
-          <div
-            class="flex gap-[10px] items-center justify-between w-full mt-[20px]"
-          >
+          <div class="flex gap-[10px] items-center justify-between w-full mt-[20px]">
             <p class="mb-0">Phân loại:</p>
             <p class="mb-0">Số lượng:</p>
           </div>
-          <div
-            class="flex justify-between mt-[10px]"
-            :key="index"
-            v-for="(variation, index) in item.variations"
-          >
+          <div class="flex justify-between mt-[10px]" :key="index" v-for="(variation, index) in item.variations">
             <div class="flex gap-[10px] items-center justify-between w-full">
               <p class="mb-0 w-[250px]">
                 {{ variation.label }}
               </p>
               <a-space>
-                <a-input-number
-                  size="small"
-                  class="w-[60px]"
-                  min="1"
-                  :max="variation.soLuong"
-                  v-model:value="variation.quantity"
-                />
+                <a-input-number size="small" class="w-[60px]" min="1" :max="variation.soLuong"
+                  v-model:value="variation.quantity" />
               </a-space>
             </div>
+
+            <div v-show="variation.isShowErr && hasClickSaveBtn" role="alert"
+            class="css-dev-only-do-not-override-eq3tly ant-form-item-explain ant-form-item-explain-connected ant-form-show-help mt-[10px] text-red-500">
+            <div class="ant-form-item-explain-error">
+              Vui lòng chọn phân loại!
+            </div>
+          </div>
           </div>
 
-          <div
-            class="flex gap-[10px] items-center justify-end w-full mt-[10px] font-semibold"
-          >
+          <div class="flex gap-[10px] items-center justify-end w-full mt-[10px] font-semibold">
             <p>Tổng tiền:</p>
             <p>
               {{
                 _formatVnCurrency(
                   item?.product?.giaMoi *
-                    item.variations.reduce((a1, a2) => a1 + a2.quantity, 0)
+                  item.variations.reduce((a1, a2) => a1 + a2.quantity, 0)
                 )
               }}
             </p>
           </div>
 
-          <div
-            v-show="item.isShowErr && hasClickSaveBtn"
-            role="alert"
-            class="css-dev-only-do-not-override-eq3tly ant-form-item-explain ant-form-item-explain-connected ant-form-show-help mt-[10px] text-red-500"
-          >
-            <div class="ant-form-item-explain-error">
-              Vui lòng chọn phân loại!
-            </div>
-          </div>
+          
         </div>
 
-        <div
-          v-show="isShowVariationInfoErr"
-          role="alert"
-          class="css-dev-only-do-not-override-eq3tly ant-form-item-explain ant-form-item-explain-connected ant-form-show-help mt-[10px] text-red-500"
-        >
+        <div v-show="isShowVariationInfoErr" role="alert"
+          class="css-dev-only-do-not-override-eq3tly ant-form-item-explain ant-form-item-explain-connected ant-form-show-help mt-[10px] text-red-500">
           <div class="ant-form-item-explain-error">Vui lòng chọn sản phẩm!</div>
         </div>
       </a-card>
@@ -121,14 +85,8 @@
           <template #title>
             <div>
               <h3 class="mb-0">Thông tin khách hàng</h3>
-              <a-select
-                v-if="false"
-                v-model:value="userSearchVal"
-                show-search
-                placeholder="Chọn tài khoản mua"
-                style="width: 200px"
-                @search="onSearchUser"
-              ></a-select>
+              <a-select v-if="false" v-model:value="userSearchVal" show-search placeholder="Chọn tài khoản mua"
+                style="width: 200px" @search="onSearchUser"></a-select>
             </div>
           </template>
 
@@ -136,65 +94,40 @@
             <div class="w-full flex gap-[10px]">
               <a-space direction="vertical" class="w-[50%]">
                 <span class="font-[500]"> Họ tên</span>
-                <a-input
-                  v-model:value="orderInfo.hoTenNguoiNhan"
-                  @change="
-                    orderInfo.hoTenNguoiNhan = _removeSpecialChars(
-                      orderInfo.hoTenNguoiNhan
-                    ).replace(/^\s+/, '')
-                  "
-                  :maxLength="255"
-                  class="w-full"
-                  placeholder="Họ tên người nhận"
-                >
+                <a-input v-model:value="orderInfo.hoTenNguoiNhan" @change="
+                  orderInfo.hoTenNguoiNhan = _removeSpecialChars(
+                    orderInfo.hoTenNguoiNhan
+                  ).replace(/^\s+/, '')
+                  " :maxLength="255" class="w-full" placeholder="Họ tên người nhận">
                 </a-input>
               </a-space>
 
               <a-space direction="vertical" class="w-[50%]">
                 <span class="font-[500]">Số điện thoại</span>
-                <a-input
-                  v-model:value="orderInfo.soDienThoaiNhanHang"
-                  :maxLength="10"
-                  @change="onTypingPhone"
-                  class="w-full"
-                  placeholder="Số điện thoai"
-                >
+                <a-input v-model:value="orderInfo.soDienThoaiNhanHang" :maxLength="10" @change="onTypingPhone"
+                  class="w-full" placeholder="Số điện thoai">
                 </a-input>
               </a-space>
             </div>
 
             <a-space direction="vertical" class="w-full">
               <span class="font-[500]">Ghi chú</span>
-              <a-input
-                v-model:value="orderInfo.ghiChu"
-                @change="
-                  orderInfo.ghiChu = _removeSpecialChars(
-                    orderInfo.ghiChu
-                  ).replace(/^\s+/, '')
-                "
-                :maxLength="255"
-                class="w-full"
-                placeholder="Ghi chú"
-              >
+              <a-input v-model:value="orderInfo.ghiChu" @change="
+                orderInfo.ghiChu = _removeSpecialChars(
+                  orderInfo.ghiChu
+                ).replace(/^\s+/, '')
+                " :maxLength="255" class="w-full" placeholder="Ghi chú">
               </a-input>
             </a-space>
 
             <div class="w-full flex flex-col gap-[10px] justify-between">
               <a-space direction="vertical" class="w-full">
                 <label class="font-[500]">Tỉnh/TP</label>
-                <a-select
-                  v-model:value="addressInfo.province"
-                  show-search
-                  placeholder="Chọn tỉnh/tp"
-                  class="w-full"
-                  @change="onProvinceChange"
-                >
+                <a-select v-model:value="addressInfo.province" show-search placeholder="Chọn tỉnh/tp" class="w-full"
+                  @change="onProvinceChange">
                   <a-select-option value="">Chọn tỉnh/tp</a-select-option>
-                  <a-select-option
-                    v-for="(item, index) in provinceList"
-                    :key="index"
-                    :value="`${item.PROVINCE_ID}##${item.PROVINCE_NAME}`"
-                  >
+                  <a-select-option v-for="(item, index) in provinceList" :key="index"
+                    :value="`${item.PROVINCE_ID}##${item.PROVINCE_NAME}`">
                     {{ item.PROVINCE_NAME }}
                   </a-select-option>
                 </a-select>
@@ -202,19 +135,11 @@
 
               <a-space direction="vertical" class="w-full">
                 <label class="font-[500]">Quận/Huyện</label>
-                <a-select
-                  v-model:value="addressInfo.district"
-                  show-search
-                  placeholder="Chọn quận/huyện"
-                  style="width: 100%"
-                  @change="onDistrictChange"
-                >
+                <a-select v-model:value="addressInfo.district" show-search placeholder="Chọn quận/huyện"
+                  style="width: 100%" @change="onDistrictChange">
                   <a-select-option value="">Chọn quận/huyện</a-select-option>
-                  <a-select-option
-                    v-for="(item, index) in districtList"
-                    :key="index"
-                    :value="`${item.DISTRICT_ID}##${item.DISTRICT_NAME}`"
-                  >
+                  <a-select-option v-for="(item, index) in districtList" :key="index"
+                    :value="`${item.DISTRICT_ID}##${item.DISTRICT_NAME}`">
                     {{ item.DISTRICT_NAME }}
                   </a-select-option>
                 </a-select>
@@ -222,17 +147,10 @@
 
               <a-space direction="vertical" class="w-full">
                 <label class="font-[500]">Xã/Phường</label>
-                <a-select
-                  v-model:value="addressInfo.ward"
-                  show-search
-                  style="width: 100%"
-                >
+                <a-select v-model:value="addressInfo.ward" show-search style="width: 100%">
                   <a-select-option value="">Chọn xã/phường</a-select-option>
-                  <a-select-option
-                    v-for="(item, index) in wardList"
-                    :key="index"
-                    :value="`${item.WARDS_ID}##${item.WARDS_NAME}`"
-                  >
+                  <a-select-option v-for="(item, index) in wardList" :key="index"
+                    :value="`${item.WARDS_ID}##${item.WARDS_NAME}`">
                     {{ item.WARDS_NAME }}
                   </a-select-option>
                 </a-select>
@@ -241,30 +159,20 @@
 
             <a-space direction="vertical" class="w-full">
               <span class="font-[500]">Số nhà</span>
-              <a-input
-                v-model:value="orderInfo.diaChiNhanHang"
-                class="w-full"
-                placeholder="Số nhà để giao hàng"
-              >
+              <a-input v-model:value="orderInfo.diaChiNhanHang" class="w-full" placeholder="Số nhà để giao hàng">
               </a-input>
             </a-space>
           </a-space>
 
-          <div
-            v-show="hasTypedPhone && phoneValidator()"
-            role="alert"
-            class="css-dev-only-do-not-override-eq3tly ant-form-item-explain ant-form-item-explain-connected ant-form-show-help mt-[10px] text-red-500"
-          >
+          <div v-show="hasTypedPhone && phoneValidator()" role="alert"
+            class="css-dev-only-do-not-override-eq3tly ant-form-item-explain ant-form-item-explain-connected ant-form-show-help mt-[10px] text-red-500">
             <div class="ant-form-item-explain-error" style="">
               <span>Số điện thoại không hợp lệ!</span>
             </div>
           </div>
 
-          <div
-            v-show="isShowCustomerInfoErr"
-            role="alert"
-            class="css-dev-only-do-not-override-eq3tly ant-form-item-explain ant-form-item-explain-connected ant-form-show-help mt-[10px] text-red-500"
-          >
+          <div v-show="isShowCustomerInfoErr" role="alert"
+            class="css-dev-only-do-not-override-eq3tly ant-form-item-explain ant-form-item-explain-connected ant-form-show-help mt-[10px] text-red-500">
             <div class="ant-form-item-explain-error" style="">
               Vui lòng điền các thông tin còn thiếu!
             </div>
@@ -289,20 +197,14 @@
 
             <a-space class="w-full justify-between">
               <label>Giảm giá: </label>
-              <a-input-number
-                class="w-[150px]"
-                :max="countProductPrice + orderInfo.shipFee"
-                v-model:value="orderInfo.discount"
-              />
+              <a-input-number class="w-[150px]" :max="countProductPrice + orderInfo.shipFee"
+                v-model:value="orderInfo.discount" />
             </a-space>
 
             <a-space class="w-full justify-between">
               <label>Hình thức thanh toán: </label>
-              <a-select
-                v-model:value="orderInfo.phuongThucTT"
-                class="min-w-[150px]"
-                placeholder="Chọn hình thức thanh toán"
-              >
+              <a-select v-model:value="orderInfo.phuongThucTT" class="min-w-[150px]"
+                placeholder="Chọn hình thức thanh toán">
                 <a-select-option value="COD">COD</a-select-option>
                 <a-select-option value="VNPAY">VNPAY</a-select-option>
               </a-select>
@@ -311,8 +213,7 @@
             <a-space class="w-full justify-between font-semibold">
               <label>Tổng Tiền thanh toán: </label>
               <span class="text-red-500">
-                {{ _formatVnCurrency(countTotalPrice) }}</span
-              >
+                {{ _formatVnCurrency(countTotalPrice) }}</span>
             </a-space>
           </a-space>
         </a-card>
@@ -343,14 +244,15 @@ import OrderService from "./services/OrderService";
 import { useRouter, useRoute } from "vue-router";
 import ChooseProductForORderModal, {
   type ChooseProductForORderModalType,
-} from "./components/ChooseProductForORderModal.vue";
+} from "./components/ChooseProductForOrderModal.vue";
+
 
 const _removeSpecialChars = inject("removeSpecialChars", (val: string) => val);
 
 const _formatVnCurrency = inject("formatVnCurrency", (length: number) => {
   return -1;
 });
-const _debounce: Function = inject("debounce", () => {});
+const _debounce: Function = inject("debounce", () => { });
 const _getProvinces = inject("getProvinces", (p: any) => []);
 const _route = useRoute();
 const _router = useRouter();
@@ -364,6 +266,8 @@ const choseProductList = ref<
       variationId?: number;
       isShowErr: boolean;
       maxQuantity: number;
+      label:any;
+      soLuong:any;
     }[];
   }[]
 >([]);
@@ -385,20 +289,20 @@ const chooseProductForOrderObj = reactive<ChooseProductForORderModalType>({
     ) {
       choseProductList.value = choseProductList.value.map((item) => {
         // foreach product
-        item.variations.forEach((v) => {
+        item.variations.forEach((v: any) => {
           console.log(
             "ok ",
-            product.variations.find((s) => v.variationId == s.variationId)
+            product.variations.find((s: any) => v.variationId == s.variationId)
           );
 
-          if (product.variations.find((s) => v.variationId == s.variationId)) {
+          if (product.variations.find((s: any) => v.variationId == s.variationId)) {
             console.log(19991);
 
             if (v.quantity != v.soLuong) v.quantity += 1;
           }
         });
-        const newVariationLs = [];
-        product.variations.forEach((v) => {
+        const newVariationLs: any[] = [];
+        product.variations.forEach((v: any) => {
           if (!item.variations.find((s) => v.variationId == s.variationId)) {
             v.quantity = 1;
             newVariationLs.push(v);
@@ -435,7 +339,7 @@ const onSearchUser = _debounce((val: string) => {
   console.log("search user: ", val);
   onCallSearchUserApi(val);
 }, 500);
-const onCallSearchUserApi = (val: string) => {};
+const onCallSearchUserApi = (val: string) => { };
 
 // end for user order
 
@@ -453,16 +357,22 @@ const addressInfo = reactive<{
 type AddressProvinceType = {
   code: string;
   name: string;
+  PROVINCE_ID: string;
+  PROVINCE_NAME: string;
   district?: AddressDistrictType[];
 };
 type AddressDistrictType = {
   code: string;
   name: string;
+  DISTRICT_ID: string;
+  DISTRICT_NAME: string;
   wards?: AddressWardType[];
 };
 type AddressWardType = {
   code: string;
   name: string;
+  WARDS_ID: string;
+  WARDS_NAME: string;
 };
 
 const provinceList = ref<AddressProvinceType[]>([]);
@@ -472,12 +382,13 @@ const wardList = ref<AddressWardType[]>([]);
 const orderInfo = reactive<IAddOrderReq>({
   phanLoaidIds: [],
   diaChiNhanHang: "288 Cầu Giấy",
-  hoTenNguoiNhan: "shiki orisu",
+  hoTenNguoiNhan: "Nguyễn Văn A",
   soDienThoaiNhanHang: "0584843998",
   ghiChu: "",
   phuongThucTT: "COD",
   discount: 0,
   shipFee: 0,
+  totalPay: 0
 });
 const hasTypedPhone = ref<boolean>(false);
 const onTypingPhone = () => (hasTypedPhone.value = true);
@@ -591,7 +502,7 @@ const onClickSave = () => {
     totalPay: orderInfo.totalPay,
   };
 
-  const variationLs = [];
+  const variationLs: any[] = [];
   choseProductList.value.forEach((item) => {
     variationLs.push(
       ...item.variations.map((j) => ({
@@ -605,7 +516,7 @@ const onClickSave = () => {
 
   console.log("ppp", payload);
 
-  OrderService.capNhatDonHang(_route.params.id, payload)
+  OrderService.capNhatDonHang(Number(_route.params.id), payload)
     .then(() => {
       notification.success({
         message: "Cập nhật thành công!",
@@ -624,12 +535,20 @@ onMounted(() => {
   provinceList.value = _getProvinces({
     p: undefined,
   });
-  OrderService.chiTietOrder(_route.params.id as number)
+  const idParam = _route.params.id;
+  let orderId: number;
+
+  if (Array.isArray(idParam)) {
+    orderId = parseInt(idParam[0], 10); // Lấy phần tử đầu tiên nếu là mảng chuỗi
+  } else {
+    orderId = parseInt(idParam, 10); // Chuyển đổi chuỗi thành số
+  }
+  OrderService.chiTietOrder(orderId)
     .then((res) => {
       choseProductList.value = [];
 
       const pMap = new Map();
-      res.data.chiTietDonHang.forEach((item) => {
+      res.data.chiTietDonHang.forEach((item: any) => {
         if (pMap.get("id_" + item.sanPham.id)) {
           pMap.get("id_" + item.sanPham.id).push({
             label: item.motaPhanLoai,
@@ -674,7 +593,7 @@ onMounted(() => {
         addressInfo.district = orderAddressRes[2];
         onDistrictChange();
         addressInfo.ward = orderAddressRes[1];
-      } catch (err) {}
+      } catch (err) { }
 
       console.log("new arr", newArr);
 

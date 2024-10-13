@@ -6,7 +6,7 @@ import router from './router'
 import Antd, { message, notification } from "ant-design-vue";
 import 'ant-design-vue/dist/reset.css';
 import './assets/main.css'
-import utils from './plugins/utils';
+import utils from './plugins/Utils';
 
 
 notification.config({

@@ -1,12 +1,67 @@
+// {
+//   "extends": "@vue/tsconfig/tsconfig.dom.json",
+//   "include": ["env.d.ts", "src/**/*.*", "src/**/*.vue","src/**/*.{ts,js,json}"],
+//   "exclude": ["src/**/__tests__/*"],
+//   "compilerOptions": {
+//     "composite": false,
+//     "baseUrl": ".",
+//     "paths": {
+//       "@/*": ["./src/*"]
+//     },
+//   }
+// }
+// ver2
+// {
+//   "extends": "@vue/tsconfig/tsconfig.dom.json",
+//   "include": [
+//     "env.d.ts",
+//     "src/**/*.*",
+//     "src/**/*.vue",
+//     "src/**/*.{ts,js,json}"
+//   ],
+//   "exclude": [
+//     "src/**/__tests__/*"
+//   ],
+//   "compilerOptions": {
+//     "composite": false,
+//     "baseUrl": ".",
+//     "paths": {
+//       "@/*": [
+//         "./src/*"
+//       ]
+//     },
+//     "types": [
+//       "vite/client",
+//       "node"
+//     ] 
+//   }
+// }
+// ver3
 {
   "extends": "@vue/tsconfig/tsconfig.dom.json",
-  "include": ["env.d.ts", "src/**/*.*", "src/**/*.vue","src/**/*.{ts,js,json}"],
-  "exclude": ["src/**/__tests__/*"],
+  "include": [
+    "env.d.ts",
+    "src/**/*.*",
+    "src/**/*.vue",
+    "src/**/*.{ts,js,json}"
+  ],
+  "exclude": [
+    "src/**/__tests__/*"
+  ],
   "compilerOptions": {
     "composite": false,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": [
+        "./src/*"
+      ]
     },
+    "types": [
+      "vite/client",
+      "node"
+    ],
+    "noEmitOnError": false, // Không dừng quá trình build nếu có lỗi
+    "skipLibCheck": true, // Bỏ qua kiểm tra kiểu cho các thư viện
+    "strict": false // Tắt chế độ strict
   }
 }

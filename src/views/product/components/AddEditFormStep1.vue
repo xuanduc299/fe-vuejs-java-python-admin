@@ -1,168 +1,83 @@
 <template>
-  <a-form
-    ref="formRef"
-    class="max-w-[80%] mx-auto mt-10 p-10 rounded"
-    style="border: 1px solid rgb(234, 228, 228)"
-    :model="formState"
-    :wrapper-col="{ span: 16 }"
-    :label-col="{ span: 5 }"
-    autocomplete="off"
-    @finish="onFinish"
-    @finishFailed="onFinishFailed"
-  >
-    <a-form-item
-      label="Tên sản phẩm"
-      name="name"
-      :rules="[{ required: true, message: 'Vui lòng không bỏ trống!' }]"
-    >
-      <a-input
-        v-model:value="formState.name"
-        @change="
-          formState.name = _removeSpecialChars(
-            formState.name.replace(/^\s+/, '')
-          )
-        "
-        :maxlength="255"
-      />
+  <a-form ref="formRef" class="max-w-[80%] mx-auto mt-10 p-10 rounded" style="border: 1px solid rgb(234, 228, 228)"
+    :model="formState" :wrapper-col="{ span: 16 }" :label-col="{ span: 5 }" autocomplete="off" @finish="onFinish"
+    @finishFailed="onFinishFailed">
+    <a-form-item label="Tên sản phẩm" name="name" :rules="[{ required: true, message: 'Vui lòng không bỏ trống!' }]">
+      <a-input v-model:value="formState.name" @change="
+        formState.name = _removeSpecialChars(
+          formState.name.replace(/^\s+/, '')
+        )
+        " :maxlength="255" />
     </a-form-item>
 
-    <a-form-item
-      label="Mã sản phẩm"
-      name="productNumber"
-      :rules="[{ required: true, message: 'Vui lòng không bỏ trống!' }]"
-    >
-      <a-input
-        v-model:value.trim="formState.productNumber"
-        @change="(e: any) => formState.productNumber =  e.target.value.replace(/[^a-zA-Z0-9@]/g, '').toUpperCase()"
-        :maxlength="15"
-      />
+    <a-form-item label="Mã sản phẩm" name="productNumber"
+      :rules="[{ required: true, message: 'Vui lòng không bỏ trống!' }]">
+      <a-input v-model:value.trim="formState.productNumber"
+        @change="(e: any) => formState.productNumber = e.target.value.replace(/[^a-zA-Z0-9@]/g, '').toUpperCase()"
+        :maxlength="15" />
     </a-form-item>
 
-    <a-form-item
-      label="Danh mục"
-      name="category"
-      :rules="[{ required: true, message: 'Vui lòng chọn danh mục!' }]"
-    >
-      <a-select
-        v-model:value="formState.category"
-        placeholder="Chọn danh mục"
-        show-search
-        :options="categoryOptions"
-        :filter-option="filterOption"
-      >
-        <a-select-option
-          :key="item.value"
-          :value="item.value"
-          v-for="item in categoryOptions"
-        >
+    <a-form-item label="Danh mục" name="category" :rules="[{ required: true, message: 'Vui lòng chọn danh mục!' }]">
+      <a-select v-model:value="formState.category" placeholder="Chọn danh mục" show-search :options="categoryOptions"
+        :filter-option="filterOption">
+        <a-select-option :key="item.value" :value="item.value" v-for="item in categoryOptions">
           {{ item.label }}
         </a-select-option>
       </a-select>
     </a-form-item>
 
-    <a-form-item
-      label="Thương hiệu"
-      name="brand"
-      :rules="[{ required: true, message: 'Vui lòng chọn thương hiệu!' }]"
-    >
-      <a-select
-        v-model:value="formState.brand"
-        placeholder="Chọn thương hiệu"
-        show-search
-        :options="brandOptions"
-        :filter-option="filterOption"
-      >
+    <a-form-item label="Thương hiệu" name="brand" :rules="[{ required: true, message: 'Vui lòng chọn thương hiệu!' }]">
+      <a-select v-model:value="formState.brand" placeholder="Chọn thương hiệu" show-search :options="brandOptions"
+        :filter-option="filterOption">
       </a-select>
     </a-form-item>
 
     <a-form-item label="Trạng thái hiển thị" name="isWebDisplay">
-      <a-select
-        placeholder="Chọn trạng thái"
-        show-search
-        v-model:value="formState.isWebDisplay"
-      >
+      <a-select placeholder="Chọn trạng thái" show-search v-model:value="formState.isWebDisplay">
         <a-select-option :value="true">Hiển thị trên web</a-select-option>
         <a-select-option :value="false">Ẩn đi</a-select-option>
       </a-select>
     </a-form-item>
 
-    <a-form-item
-      label="Giá hiện tại"
-      name="newPrice"
-      :rules="[{ required: true, validator: newPriceValidator }]"
-    >
-      <a-input-number
-        v-model:value="formState.newPrice"
-        :max="100000000"
-        class="w-full"
-      >
+    <a-form-item label="Giá hiện tại" name="newPrice" :rules="[{ required: true, validator: newPriceValidator }]">
+      <a-input-number v-model:value="formState.newPrice" :max="100000000" class="w-full">
         <template #addonAfter> vnd </template>
       </a-input-number>
     </a-form-item>
 
     <a-form-item v-if="formState.id != 0" label="Giá cũ" name="oldPrice">
-      <a-input-number
-        @change="onChangeOldPrice"
-        v-model:value="formState.oldPrice"
-        :max="100000000"
-        class="w-full"
-      >
+      <a-input-number @change="onChangeOldPrice" v-model:value="formState.oldPrice" :max="100000000" class="w-full">
         <template #addonAfter> vnd </template>
       </a-input-number>
     </a-form-item>
 
-    <a-form-item
-      label="Ảnh chính"
-      name="mainImage"
-      :rules="[{ required: true, message: 'Vui lòng chọn ảnh!' }]"
-    >
-      <div
-        v-if="!productImages.mainImage"
-        @click="onChooseMainImage"
+    <a-form-item label="Ảnh chính" name="mainImage" :rules="[{ required: true, message: 'Vui lòng chọn ảnh!' }]">
+      <div v-if="!productImages.mainImage" @click="onChooseMainImage"
         class="w-[103px] h-[110px] flex justify-center items-center hover:scale-[1.05] ease-in-out duration-150 cursor-pointer"
-        style="border: 1px solid #d9d9d9"
-      >
+        style="border: 1px solid #d9d9d9">
         <plus-outlined class="text-[20px]" />
       </div>
 
-      <div
-        v-else
-        class="w-[103px] h-[110px] ease-in-out duration-150 relative"
-        style="border: 1px solid #d9d9d9"
-      >
-        <delete-outlined
-          @click="removeMainImg"
-          class="right-0 top-0 absolute cursor-pointer hover:scale-[1.05] text-red-500 bg-white p-[3px]"
-        />
+      <div v-else class="w-[103px] h-[110px] ease-in-out duration-150 relative" style="border: 1px solid #d9d9d9">
+        <delete-outlined @click="removeMainImg"
+          class="right-0 top-0 absolute cursor-pointer hover:scale-[1.05] text-red-500 bg-white p-[3px]" />
         <img class="w-full h-full" :src="productImages.mainImage.url" />
       </div>
     </a-form-item>
 
-    <a-form-item
-      label="Ảnh phụ(tối đa 6 ảnh)"
-      name="bgImages"
-      :rules="[{ required: true, message: 'Vui lòng chọn ảnh!' }]"
-    >
+    <a-form-item label="Ảnh phụ(tối đa 6 ảnh)" name="bgImages"
+      :rules="[{ required: true, message: 'Vui lòng chọn ảnh!' }]">
       <div class="flex flex-wrap gap-[10px]">
-        <div
-          v-key="index"
-          v-for="(file, index) in productImages.bgImages"
-          class="w-[103px] h-[110px] ease-in-out duration-150 relative"
-          style="border: 1px solid #d9d9d9"
-        >
-          <delete-outlined
-            @click="removeBgImg(file.id)"
-            class="right-0 top-0 absolute cursor-pointer hover:scale-[1.05] text-red-500 bg-white p-[3px]"
-          />
+        <div v-key="index" v-for="(file, index) in productImages.bgImages"
+          class="w-[103px] h-[110px] ease-in-out duration-150 relative" style="border: 1px solid #d9d9d9">
+          <delete-outlined @click="removeBgImg(file.id)"
+            class="right-0 top-0 absolute cursor-pointer hover:scale-[1.05] text-red-500 bg-white p-[3px]" />
           <img class="w-full h-full" :src="file.url" />
         </div>
 
-        <div
-          v-if="productImages.bgImages.length < 6"
-          @click="onChooseBgImage"
+        <div v-if="productImages.bgImages.length < 6" @click="onChooseBgImage"
           class="w-[103px] h-[110px] flex justify-center items-center hover:scale-[1.05] ease-in-out duration-150 cursor-pointer"
-          style="border: 1px solid #d9d9d9"
-        >
+          style="border: 1px solid #d9d9d9">
           <plus-outlined class="text-[20px]" />
         </div>
       </div>
@@ -175,101 +90,56 @@
       </a-radio-group>
     </a-form-item>
 
-    <a-form-item
-      label="Chất liệu"
-      name="chatLieu"
-      :rules="[{ required: true, message: 'Vui lòng không bỏ trống!' }]"
-    >
-      <a-input
-        v-model:value="formState.chatLieu"
-        @change="
-          formState.chatLieu = _removeSpecialChars(
-            formState.chatLieu.replace(/^\s+/, '')
-          )
-        "
-        :maxlength="255"
-      ></a-input>
+    <a-form-item label="Chất liệu" name="chatLieu" :rules="[{ required: true, message: 'Vui lòng không bỏ trống!' }]">
+      <a-input v-model:value="formState.chatLieu" @change="
+        formState.chatLieu = _removeSpecialChars(
+          formState.chatLieu.replace(/^\s+/, '')
+        )
+        " :maxlength="255"></a-input>
     </a-form-item>
 
-    <a-form-item
-      label="Trọng lượng"
-      name="trongLuong"
-      :rules="[{ required: true, message: 'Vui lòng không bỏ trống!' }]"
-    >
-      <a-input
-        type="number"
-        v-model:value="formState.trongLuong"
-        :minLength="3"
-        :maxlength="4"
-        class="w-full"
-      >
+    <a-form-item label="Trọng lượng" name="trongLuong"
+      :rules="[{ required: true, message: 'Vui lòng không bỏ trống!' }]">
+      <a-input type="number" v-model:value="formState.trongLuong" :minLength="3" :maxlength="4" class="w-full">
         <template #suffix> Gam </template>
       </a-input>
     </a-form-item>
     <a-form-item label="Công nghệ" name="congNghe">
-      <a-input
-        v-model:value="formState.congNghe"
-        @change="
-          formState.congNghe = _removeSpecialChars(
-            formState.congNghe.replace(/^\s+/, '')
-          )
-        "
-        :maxlength="255"
-      ></a-input>
+      <a-input v-model:value="formState.congNghe" @change="
+        formState.congNghe = _removeSpecialChars(
+          formState.congNghe.replace(/^\s+/, '')
+        )
+        " :maxlength="255"></a-input>
     </a-form-item>
 
-    <a-form-item
-      label="Tính năng nổi bật"
-      name="tinhNang"
-      :rules="[{ required: true, message: 'Vui lòng không bỏ trống!' }]"
-    >
-      <a-input
-        v-model:value="formState.tinhNang"
-        @change="
-          formState.tinhNang = _removeSpecialChars(
-            formState.tinhNang.replace(/^\s+/, '')
-          )
-        "
-        :maxlength="255"
-      ></a-input>
+    <a-form-item label="Tính năng nổi bật" name="tinhNang"
+      :rules="[{ required: true, message: 'Vui lòng không bỏ trống!' }]">
+      <a-input v-model:value="formState.tinhNang" @change="
+        formState.tinhNang = _removeSpecialChars(
+          formState.tinhNang.replace(/^\s+/, '')
+        )
+        " :maxlength="255"></a-input>
     </a-form-item>
 
-    <a-form-item
-      label="Nơi sản xuất"
-      name="noiSanXuat"
-      :rules="[{ required: true, message: 'Vui lòng không bỏ trống!' }]"
-    >
-      <a-input
-        v-model:value="formState.noiSanXuat"
-        @change="
-          formState.noiSanXuat = _removeSpecialChars(
-            formState.noiSanXuat.replace(/^\s+/, '')
-          )
-        "
-        :maxlength="255"
-      ></a-input>
+    <a-form-item label="Nơi sản xuất" name="noiSanXuat"
+      :rules="[{ required: true, message: 'Vui lòng không bỏ trống!' }]">
+      <a-input v-model:value="formState.noiSanXuat" @change="
+        formState.noiSanXuat = _removeSpecialChars(
+          formState.noiSanXuat.replace(/^\s+/, '')
+        )
+        " :maxlength="255"></a-input>
     </a-form-item>
 
-    <a-form-item
-      label="Mô tả"
-      name="desc"
-      :rules="[{ required: true, message: 'Vui lòng không bỏ trống!' }]"
-    >
-      <a-textarea
-        v-model:value="formState.desc"
-        @change="
-          formState.desc = _removeSpecialChars(
-            formState.desc.replace(/^\s+/, '')
-          )
-        "
-        :maxlength="255"
-      ></a-textarea>
+    <a-form-item label="Mô tả" name="desc" :rules="[{ required: true, message: 'Vui lòng không bỏ trống!' }]">
+      <a-textarea v-model:value="formState.desc" @change="
+        formState.desc = _removeSpecialChars(
+          formState.desc.replace(/^\s+/, '')
+        )
+        " :maxlength="255"></a-textarea>
     </a-form-item>
 
     <div class="flex justify-center gap-[15px]">
-      <a-button type="primary" html-type="button" @click="resetFormStep1"
-        >Làm mới</a-button
-      >
+      <a-button type="primary" html-type="button" @click="resetFormStep1">Làm mới</a-button>
       <a-button type="primary" html-type="submit">Lưu</a-button>
     </div>
   </a-form>
@@ -509,7 +379,7 @@ onMounted(() => {
   })
     .then(({ data }: IAxiosRes<ICategoryType[]>) => {
       console.log("product. category data: ", data);
-      categoryOptions.value = data.content.map((item) => ({
+      categoryOptions.value = data.map((item: any) => ({
         label: item.tenDanhMuc,
         value: item.id,
       }));
